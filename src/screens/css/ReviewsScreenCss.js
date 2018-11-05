@@ -198,5 +198,5 @@ export default StyleSheet.create({
     lineHeight: 14,
     marginBottom: 12,
     marginHorizontal: 16
-  },
+  }
 });

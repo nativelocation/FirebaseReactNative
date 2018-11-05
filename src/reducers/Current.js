@@ -15,8 +15,7 @@ const initialState = {
   allAreas: [],
   position: {},
   product: {},
-  compare: [],
-  discoverNum: 0,
+  compare: []
 };
 
 const setCompareData = (state, payload) => {
@@ -67,12 +66,6 @@ export default current = (state = initialState, action) => {
       return {
         ...state,
         allAreas: action.payload
-      }
-      break;
-    case 'UPDATE_DISCOVER_NUMBER':
-      return {
-        ...state,
-        discoverNum: action.payload
       }
       break;
     case 'UPDATE_COMPARE_INFO':

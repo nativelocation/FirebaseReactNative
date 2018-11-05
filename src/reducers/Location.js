@@ -8,8 +8,7 @@
 
 
 const initialState = {
-  locationAll: [],
-  locationItem:{}
+  locationAll: []
 };
 
 export default locations = (state = initialState, action) => {
@@ -18,11 +17,6 @@ export default locations = (state = initialState, action) => {
       return {
         ...state,
         locationAll: action.payload
-      }
-    case 'STORE_LOCATION_ITEM':
-      return {
-        ...state,
-        locationItem: action.payload
       }
     default:
       return state;

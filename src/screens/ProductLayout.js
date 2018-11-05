@@ -33,7 +33,7 @@ class ProductLayoutScreen extends Component {
 
     this.state = {
       animatedValue: new Animated.Value(0),
-      enterZone: false,
+      enterZone: true,
       walkbaseId: 0
     };
 
@@ -42,10 +42,8 @@ class ProductLayoutScreen extends Component {
     this.getAreaData();
   }
   getAreaData() {
-    // const { navigation } = this.props;
-    // const area = navigation.getParam('areaData');
-    const area = this.props.locationItem;
-    console.log("-----", area);
+    const { navigation } = this.props;
+    const area = navigation.getParam('areaData');
     const arrAreas = [];
     arrAreas.push(area);
     this.props.dispatch(setProductInfo({}));
@@ -58,8 +56,8 @@ class ProductLayoutScreen extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.locationData !== this.state.locationData) {
-      this.setState({enterZone: true});
+    if (nextProps.walkbaseId !== this.state.walkbaseId) {
+
     }
   }
 
@@ -165,11 +163,8 @@ class ProductLayoutScreen extends Component {
         accsRef.doc(accessoryId).get()
           .then(accessory => {
             if (!accessory.exists) resolve({});
-            let accessoryData = accessory.data();
-            if(accessoryData !== undefined){
-              console.log(accessoryData);
-              accessoryData.id = accessoryId;
-            }
+            const accessoryData = accessory.data();
+            accessoryData.id = accessoryId;
             resolve(accessoryData);
           })
           .catch(err => { console.log('Error getting documents', err); });
@@ -273,7 +268,7 @@ class ProductLayoutScreen extends Component {
     return (
       <Modal style={[styles.modalContent, styles.bottomModal]} isVisible={this.state.enterZone} onSwipe={() => this.setState({ enterZone: true })} swipeDirection="left">
         <View style={{ flex: 1, position: 'absolute', bottom: 10 }}>
-          <TouchableOpacity onPress={() => this.setState({ enterZone: false })}>
+          <TouchableOpacity onPress={() => this.setState({ enterZone: true })}>
             <View style={styles.bottomModalView}>
               <View style={{ marginLeft: 20, alignItems: 'center', }}>
                 <Icon height="50" width="50" name="ManIcon" viewBox="0 0 127 125" fill="#000" />
@@ -307,19 +302,19 @@ class ProductLayoutScreen extends Component {
             <Icon name="ArrowLeft" width="10" height="16" viewBox="0 0 10 16" fill="#FFFFFF" />
           </TouchableOpacity>
         </View>
-        <Animated.View style={{ width: '100%', height: height - 195 }}>
+        <Animated.View style={{ width: '100%', height: height - 100 }}>
           <RoutesProducts onScrollLayout={this.state.animatedValue} />
         </Animated.View>
-        {this.showEnterZoneDialog()}
+        {/* {this.showEnterZoneDialog()} */}
       </SafeAreaView>
     );
   }
 }
 
 const mapStateToProps = state => {
-  const { common, current, productsNear, locations } = state;
+  const { common, current, productsNear } = state;
 
-  return { firebaseid: common.firebaseid, locationData: current.position, productsNear: productsNear.productsNear, locationItem: locations.locationItem };
+  return { firebaseid: common.firebaseid, locationData: current.position, productsNear: productsNear.productsNear };
 }
 
 const ProductLayout = createStackNavigator(

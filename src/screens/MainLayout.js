@@ -9,9 +9,8 @@ import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import firebase from 'react-native-firebase';
-import Icon from '../assets/images/Icon';
 // Action
-import { setLocationAllInfo, setLocationSelectItem } from '../actions/Locations';
+import { setLocationAllInfo } from '../actions/Locations';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { FakeAreas } from '../store/AreaFakeData';
@@ -80,63 +79,14 @@ class MainLayout extends Component {
       .catch(error => { })
   }
 
-  gotoDirecTV = () => {
-    this.props.navigation.navigate('Discover');
-  }
-
   gotoZone = (index) => {
     const arrAreas = this.state.locationData[0].zones[index];
-    this.props.dispatch(setLocationSelectItem(arrAreas));
-    this.props.navigation.navigate('TabNav', {
+    this.props.navigation.navigate('ProductLayout', {
       areaData: arrAreas
     });
   }
-  gotoService = (index) => {
-    this.props.navigation.navigate('ServiceZone');
-  }
 
   _renderItem({ item, index }) {
-    if (item === 'DirecTV') {
-      return (<View style={styles.itemContainer} key={index}>
-        <View style={[styles.itemBox, { height: 200 }]}>
-          <Image style={styles.bgImage} source={require("../assets/images/files/titleCardArrow.png")} />
-          <Image
-            style={styles.titleCardArrow}
-            resizeMode={Image.resizeMode.cover}
-            source={require("../assets/images/files/titleCardArrow.png")} />
-          <TouchableOpacity onPress={() => this.gotoDirecTV()}>
-            <View style={[styles.titleCardBox]}>
-              <Icon height="30" width="30" name="ManIcon" viewBox="0 0 127 125" fill="#000" />
-              <Text numberOfLines={1} style={styles.titleCard}>DirecTV</Text>
-            </View>
-            {/* <Text numberOfLines={1} style={styles.subTitleCard}>{item.titleCard.subtitle}</Text> */}
-          </TouchableOpacity>
-        </View>
-      </View>
-      )
-    } else {
-      return (
-        <View style={styles.itemContainer} key={index}>
-          <View style={[styles.itemBox, { height: 200 }]}>
-            <Image style={styles.bgImage} source={{ uri: item.homeCard.img }} />
-            <Image
-              style={styles.titleCardArrow}
-              resizeMode={Image.resizeMode.cover}
-              source={require("../assets/images/files/titleCardArrow.png")} />
-            <TouchableOpacity onPress={() => this.gotoZone(index)}>
-              <View style={[styles.titleCardBox]}>
-                <Icon height="30" width="30" name="ManIcon" viewBox="0 0 127 125" fill="#000" />
-                <Text numberOfLines={1} style={styles.titleCard}>{item.titleCard.title}</Text>
-              </View>
-              <Text numberOfLines={1} style={styles.subTitleCard}>{item.titleCard.subtitle}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
-    }
-  }
-
-  _renderItem1({ item, index }) {
     return (
       <View style={styles.itemContainer} key={index}>
         <TouchableOpacity onPress={() => this.gotoZone(index)}>
@@ -154,13 +104,12 @@ class MainLayout extends Component {
 
   render() {
     const { locationData, sliderActiveSlide } = this.state;
+    console.log(locationData);
     let currentLocationsData = null;
     let bgImg = require('../assets/images/files/splash.png');
     if (locationData !== null) {
       currentLocationsData = locationData[0].zones;
-      if(sliderActiveSlide < currentLocationsData.length){
-        bgImg = { uri: locationData[0].zones[sliderActiveSlide].homeCard.img };
-      }
+      bgImg = {uri: locationData[0].zones[sliderActiveSlide].homeCard.img};
     }
     return (
       <SafeAreaView forceInset={{ top: 'always' }} style={{ backgroundColor: '#FFF' }}>
@@ -169,7 +118,8 @@ class MainLayout extends Component {
           <View style={styles.sliderView}>
             {currentLocationsData &&
               <Carousel
-                data={[...currentLocationsData, 'DirecTV']}
+                ref={c => this._carouselRef = c}
+                data={currentLocationsData}
                 renderItem={this._renderItem.bind(this)}
                 sliderWidth={sliderWidth}
                 itemWidth={itemWidth}
