@@ -294,7 +294,7 @@ class Routes extends Component {
         locationdata = JSON.parse(e.data);
         if (locationdata.zone_id === null) {
           zone_id = 'off site';
-          confidence = locationdata.confidence;
+          confidence = 1;
          }//zone_id = -1;
         else {
           zone_id = locationdata.zone_id;
