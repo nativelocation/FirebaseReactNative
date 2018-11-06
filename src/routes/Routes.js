@@ -161,7 +161,7 @@ class Routes extends Component {
   }
 
   componentDidMount() {
-    this.webAPI();
+    this.webAPIpresence();
     this.firebaseLogin();
   }
 
@@ -272,7 +272,7 @@ class Routes extends Component {
     };
   }
 
-  webAPI1() {
+  webAPIpresence() {
     ws.onopen = () => {
       // connection opened
       // NearbyAuthRequest
@@ -285,13 +285,17 @@ class Routes extends Component {
     let confidence = 0;
     var zoneData = new Array();
     var confidenceData = new Array();
+    let confidenceThreshold = .9;
     var errorCheck = 0;
     const maxLength = 5;
     ws.onmessage = (e) => {
 
       if (e.data !== "") {
         locationdata = JSON.parse(e.data);
-        if (locationdata.zone_id === null) { }//zone_id = -1;
+        if (locationdata.zone_id === null) {
+          zone_id = 'off site';
+          confidence = locationdata.confidence;
+         }//zone_id = -1;
         else {
           zone_id = locationdata.zone_id;
           confidence = locationdata.confidence;
@@ -306,7 +310,7 @@ class Routes extends Component {
         confidenceData.push(confidence);
 
         if(zoneData.length === 6) {
-          if(confidenceData[5] > 0.9 && confidenceData[4] > 0.9 && confidenceData[3] > 0.9 && confidenceData[2] > 0.9) {
+          if(confidenceData[5] > confidenceThreshold && confidenceData[4] > confidenceThreshold && confidenceData[3] > confidenceThreshold && confidenceData[2] > confidenceThreshold) {
             if(zoneData[5] === zoneData[4] && zoneData[5] === zoneData[3] && zoneData[5] === zoneData[2]){
               if (last_zone_id != locationdata.zone_id) {
                 this.props.dispatch(setLocationData(locationdata));
